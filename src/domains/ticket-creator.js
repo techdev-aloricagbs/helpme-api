@@ -6,8 +6,8 @@ class TicketCreator {
 
   static execute(params) {
     const promise = glideRecord.insert(params.ticket);
-    return Promise.resolve(promise).tap(() => {
-      eventBus.emit('ticket-created', params.sysInfo);
+    return Promise.resolve(promise).tap((ticket) => {
+      eventBus.emit('ticket-created', ticket, params.sysInfo);
     });
   }
 

@@ -1,4 +1,6 @@
 const dotenv = require('dotenv');
+const mongoose = require('mongoose');
+const { url } = require('config/database');
 
 dotenv.config();
 
@@ -6,9 +8,7 @@ require('../src');
 const api = require('../api');
 const { port } = require('config/app');
 
-api.on('error', (err) => {
-    console.log(err); // eslint-disable-line
-});
+mongoose.connect(url);
 
 api.listen(port, () => {
   console.log(`Running app on port ${port}`); // eslint-disable-line
