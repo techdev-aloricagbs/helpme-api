@@ -94,12 +94,10 @@ describe('TicketCreator', () => {
   };
 
   const params = {
-    ticket: {
-      short_description: 'We need help!!!',
-      description: 'Computer is burning!!!',
-      urgency: 1,
-      impact: 1,
-    },
+    short_description: 'We need help!!!',
+    description: 'Computer is burning!!!',
+    urgency: 1,
+    impact: 1,
     sysInfo: {
       manufacturer: 'Intel',
       brand: 'Core i5-2400',

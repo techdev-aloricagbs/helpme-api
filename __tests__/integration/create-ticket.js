@@ -6,12 +6,10 @@ const mongoose = require('mongoose');
 
 describe('POST /tickets', () => {
   const params = {
-    ticket: {
-      short_description: 'We need help!!!',
-      description: 'Computer is burning!!!',
-      urgency: 1,
-      impact: 1,
-    },
+    short_description: 'We need help!!!',
+    description: 'Computer is burning!!!',
+    urgency: 1,
+    impact: 1,
     sys_info: {
       manufacturer: 'Intel',
       brand: 'Core i5-2400',
