@@ -1,0 +1,96 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is the official API docs for HelpMe API",
+    "version": "1.0.0",
+    "title": "Help Me API",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {
+      "email": "apiteam@swagger.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "host": "localhost:3000",
+  "tags": [
+    {
+      "name": "Ticket",
+      "description": "Issue to be resolved"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/tickets": {
+      "post": {
+        "tags": [
+          "Ticket"
+        ],
+        "summary": "Create a new ticket",
+        "description": "",
+        "operationId": "createTicket",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "ticket",
+            "description": "Pet object that needs to be added to the store",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Ticket"
+            }
+          }
+        ],
+        "responses": {
+          "405": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Ticket": {
+      "type": "object",
+      "properties": {
+        "impact": {
+          "type": "integer",
+          "enum": [
+            1,
+            2,
+            3
+          ]
+        },
+        "urgency": {
+          "type": "integer",
+          "enum": [
+            1,
+            2,
+            3
+          ]
+        },
+        "short_description": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "sys_info": {
+          "type": "object"
+        }
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  }
+}

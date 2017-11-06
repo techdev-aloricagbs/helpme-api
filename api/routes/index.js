@@ -2,6 +2,7 @@ const Router = require('express').Router;
 
 const changeCase = require('./middlewares/change-case');
 const TicketCreator = require('src/domains/ticket-creator');
+const swaggerConfig = require('config/swagger');
 const { env } = require('config/app');
 
 const router = Router();
@@ -23,6 +24,10 @@ router.post('/tickets', (req, res, next) => {
   .catch((err) => {
     next(err);
   });
+});
+
+router.get('/swagger', (req, res) => {
+  res.json(swaggerConfig);
 });
 
 // eslint-disable-next-line no-unused-vars
