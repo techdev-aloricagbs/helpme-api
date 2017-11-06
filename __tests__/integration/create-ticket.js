@@ -12,7 +12,7 @@ describe('POST /tickets', () => {
       urgency: 1,
       impact: 1,
     },
-    sysInfo: {
+    sys_info: {
       manufacturer: 'Intel',
       brand: 'Core i5-2400',
     },
