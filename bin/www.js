@@ -1,4 +1,9 @@
 const dotenv = require('dotenv');
+
+const path = require('app-module-path');
+
+path.addPath(process.cwd());
+
 const mongoose = require('mongoose');
 const { url } = require('config/database');
 

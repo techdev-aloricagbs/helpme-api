@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
   });
 });
 
-router.post('/', (req, res, next) => {
+router.post('/tickets', (req, res, next) => {
   const params = req.body;
   return TicketCreator.execute(params).then((ticket) => {
     res.status(201).json(ticket);

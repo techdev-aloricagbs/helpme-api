@@ -12,3 +12,5 @@ class TicketObserver {
   }
 
 }
+
+module.exports = TicketObserver;
