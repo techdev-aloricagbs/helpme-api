@@ -23,6 +23,7 @@
   "license": "ISC",
   "dependencies": {
     "app-module-path": "^2.2.0",
+    "axios": "^0.17.1",
     "bluebird": "^3.5.1",
     "body-parser": "^1.18.2",
     "change-case": "^3.0.1",
@@ -38,8 +39,10 @@
     "node-repl": "^2.0.2",
     "passport": "^0.3.2",
     "passport-http-bearer": "^1.0.1",
+    "querystring": "^0.2.0",
     "rollbar": "^2.3.1",
     "servicenow-rest": "^1.2.2",
+    "systeminformation": "^3.33.5",
     "uuid": "^3.1.0"
   },
   "devDependencies": {
@@ -51,6 +54,7 @@
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.4.0",
     "jest": "^20.0.4",
+    "nock": "^9.1.0",
     "supertest": "^3.0.0"
   }
 }

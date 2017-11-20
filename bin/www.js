@@ -1,15 +1,12 @@
 const dotenv = require('dotenv');
-
-const path = require('app-module-path');
-
-path.addPath(process.cwd());
-
 const mongoose = require('mongoose');
+
+require('../src');
+
 const { url } = require('config/database');
 
 dotenv.config();
 
-require('../src');
 const api = require('../api');
 const { port } = require('config/app');
 

@@ -2,6 +2,7 @@ const Router = require('express').Router;
 
 const changeCase = require('./middlewares/change-case');
 const TicketCreator = require('src/domains/ticket-creator');
+const Authenticator = require('src/services/service-now/authenticator');
 const swaggerConfig = require('config/swagger');
 const { env } = require('config/app');
 
@@ -24,6 +25,16 @@ router.post('/tickets', (req, res, next) => {
   .catch((err) => {
     next(err);
   });
+});
+
+router.post('/tokens', async (req, res, next) => {
+  const params = req.body;
+  try {
+    const auth = Authenticator.execute(params);
+    res.status(201).json(auth);
+  } catch (err) {
+    next(err);
+  }
 });
 
 router.get('/swagger', (req, res) => {
