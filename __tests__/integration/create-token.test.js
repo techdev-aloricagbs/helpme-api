@@ -1,25 +1,17 @@
-const nock = require('nock');
-const querystring = require('querystring');
+const request = require('supertest');
 const { url, client } = require('config/servicenow');
-const Authenticator = require('src/services/service-now/authenticator');
+const querystring = require('querystring');
+const { clientToken } = require('config/app');
+const app = require('bin/test');
+const nock = require('nock');
 
-describe('ServiceNowAuthenticator.execute', () => {
+describe('POST /tokens', () => {
   const username = 'abraham.lincoln';
   const password = 'qwerty123';
-
-  const expectedServiceNowParams = {
-    grant_type: 'password',
-    client_id: client.id,
-    client_secret: client.secret,
-    username,
-    password,
-  };
-
   const params = {
     username,
     password,
   };
-
 
   const serviceNowRes = {
     access_token: 'MXgA19ZQ_j60k6oi7YRPKhx31neAEpuFnKq8MS-Wh_kzTNOUGqQO_ypghEdAX0evuKR9fV',
@@ -29,9 +21,16 @@ describe('ServiceNowAuthenticator.execute', () => {
     expires_in: 333299,
   };
 
+  const expectedServiceNowParams = {
+    grant_type: 'password',
+    client_id: client.id,
+    client_secret: client.secret,
+    username,
+    password,
+  };
+
   beforeEach(() => {
     nock(url)
-      .log(console.log)
       .post('/oauth_token.do', querystring.stringify(expectedServiceNowParams))
       .reply(200, serviceNowRes);
   });
@@ -40,13 +39,14 @@ describe('ServiceNowAuthenticator.execute', () => {
     nock.cleanAll();
   });
 
-  it('returns a promise', () => {
-    const promise = Authenticator.execute(params);
-    expect(promise.then).toBeTruthy();
-  });
+  it('returns a 201', () => request(app)
+      .post('/tokens')
+      .set('authorization', clientToken)
+      .send(params)
+      .expect(201));
 
-  it('promises the service now response', async () => {
-    const res = await Authenticator.execute(params);
-    expect(res).toEqual(serviceNowRes);
-  });
+  it('returns a 401 when no client token is passed', () => request(app)
+      .post('/tokens')
+      .send(params)
+      .expect(401));
 });

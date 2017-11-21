@@ -1,6 +1,7 @@
 const Router = require('express').Router;
 
 const changeCase = require('./middlewares/change-case');
+const authenticateClient = require('./middlewares/authenticate-client');
 const TicketCreator = require('src/domains/ticket-creator');
 const Authenticator = require('src/services/service-now/authenticator');
 const swaggerConfig = require('config/swagger');
@@ -27,7 +28,7 @@ router.post('/tickets', (req, res, next) => {
   });
 });
 
-router.post('/tokens', async (req, res, next) => {
+router.post('/tokens', authenticateClient, async (req, res, next) => {
   const params = req.body;
   try {
     const auth = Authenticator.execute(params);
