@@ -4,6 +4,7 @@ const changeCase = require('./middlewares/change-case');
 const authenticateClient = require('./middlewares/authenticate-client');
 const TicketCreator = require('src/domains/ticket-creator');
 const Authenticator = require('src/services/service-now/authenticator');
+const MyIncidentsFetcher = require('src/services/service-now/my-incidents-fetcher');
 const swaggerConfig = require('config/swagger');
 const { env } = require('config/app');
 const passport = require('./passport');
@@ -17,6 +18,15 @@ router.get('/', (req, res) => {
     version: '1.0',
     environment: env,
   });
+});
+
+router.post('/tickets', passport.authenticate('bearer', { session: false }), async (req, res, next) => {
+  try {
+    const ticket = await MyIncidentsFetcher.execute(req.token);
+    res.status(201).json(ticket);
+  } catch (err) {
+    next(err);
+  }
 });
 
 router.post('/tickets', passport.authenticate('bearer', { session: false }), async (req, res, next) => {
