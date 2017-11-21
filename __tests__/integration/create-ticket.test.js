@@ -1,10 +1,12 @@
 const request = require('supertest');
-const GlideRecord = require('servicenow-rest').gliderecord;
+const nock = require('nock');
 const app = require('bin/test');
+const serviceNowUrl = require('config/servicenow').url;
 const { url } = require('config/database');
 const mongoose = require('mongoose');
 
 describe('POST /tickets', () => {
+  const token = 'biM0vraNrU3gvcGmP0nYz4Uz-dmrpHSyVjZuVSdXFqjY1r3K0bPPaaj6Kti22EvEvDva_FzeXbcuL610L3rFjQ';
   const params = {
     short_description: 'We need help!!!',
     description: 'Computer is burning!!!',
@@ -31,27 +33,35 @@ describe('POST /tickets', () => {
     sys_updated_by: '',
   };
 
-  let glideSpy;
-
   beforeEach(() => {
-    glideSpy = jest.spyOn(GlideRecord.prototype, 'insert')
-      .mockReturnValue(Promise.resolve(serviceNowRes));
+    nock(serviceNowUrl)
+    .matchHeader('authorization', `Bearer ${token}`)
+    .post('/api/now/table/incident', params)
+    .reply(201, { result: serviceNowRes });
+
     mongoose.connect(url);
   });
 
   afterEach(() => {
-    glideSpy.mockRestore();
+    nock.cleanAll();
   });
 
   it('responds with a 201', () => request(app)
       .post('/tickets')
       .send(params)
+      .set('Authorization', `Bearer ${token}`)
       .expect(201));
 
   it('responds with servicenow\'s response', () => request(app)
       .post('/tickets')
       .send(params)
+      .set('Authorization', `Bearer ${token}`)
       .then((res) => {
         expect(res.body).toEqual(serviceNowRes);
       }));
+
+  it('responds with a 401 when no bearer token is passed', () => request(app)
+      .post('/tickets')
+      .send(params)
+      .expect(401));
 });

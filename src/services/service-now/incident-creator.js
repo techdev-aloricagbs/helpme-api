@@ -1,9 +1,14 @@
-const glideRecord = require('./');
+const request = require('superagent');
+const { url } = require('config/servicenow');
 
 class IncidentCreator {
 
-  static execute(params) {
-    return glideRecord.insert(params);
+  static async execute(params, accessToken) {
+    const incidentUrl = `${url}/api/now/table/incident`;
+    const res = await request.post(incidentUrl)
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send(params);
+    return res.body.result;
   }
 
 }

@@ -6,6 +6,7 @@ const TicketCreator = require('src/domains/ticket-creator');
 const Authenticator = require('src/services/service-now/authenticator');
 const swaggerConfig = require('config/swagger');
 const { env } = require('config/app');
+const passport = require('./passport');
 
 const router = Router();
 
@@ -18,14 +19,14 @@ router.get('/', (req, res) => {
   });
 });
 
-router.post('/tickets', (req, res, next) => {
+router.post('/tickets', passport.authenticate('bearer', { session: false }), async (req, res, next) => {
   const params = req.body;
-  return TicketCreator.execute(params).then((ticket) => {
+  try {
+    const ticket = await TicketCreator.execute(params, req.token);
     res.status(201).json(ticket);
-  })
-  .catch((err) => {
+  } catch (err) {
     next(err);
-  });
+  }
 });
 
 router.post('/tokens', authenticateClient, async (req, res, next) => {

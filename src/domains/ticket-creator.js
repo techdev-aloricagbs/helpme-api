@@ -1,16 +1,15 @@
-const glideRecord = require('src/services/service-now');
 const eventBus = require('src/eventBus');
 const Promise = require('bluebird');
 const changeCaseObj = require('change-case-object');
+const IncidentCreator = require('src/services/service-now/incident-creator');
 
 class TicketCreator {
 
-  static execute(params) {
+  static async execute(params, token) {
     const serviceNowParams = changeCaseObj.snakeCase(params);
-    const promise = glideRecord.insert(serviceNowParams);
-    return Promise.resolve(promise).tap((ticket) => {
-      eventBus.emit('ticket-created', ticket, params.sysInfo);
-    });
+    const res = await IncidentCreator.execute(serviceNowParams, token);
+    eventBus.emit('ticket-created', res, params.sysInfo);
+    return res;
   }
 
 }
