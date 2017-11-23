@@ -5,6 +5,8 @@ const authenticateClient = require('./middlewares/authenticate-client');
 const TicketCreator = require('src/domains/ticket-creator');
 const Authenticator = require('src/services/service-now/authenticator');
 const MyIncidentsFetcher = require('src/services/service-now/my-incidents-fetcher');
+const OauthFetcher = require('src/services/service-now/oauth-credentials-fetcher');
+const UserFetcher = require('src/services/service-now/user-fetcher');
 const swaggerConfig = require('config/swagger');
 const { env } = require('config/app');
 const passport = require('./passport');
@@ -34,6 +36,16 @@ router.post('/tickets', passport.authenticate('bearer', { session: false }), asy
   try {
     const ticket = await TicketCreator.execute(params, req.token);
     res.status(201).json(ticket);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get('/user', passport.authenticate('bearer', { session: false }), async (req, res, next) => {
+  try {
+    const oauthItem = await OauthFetcher.execute(req.token);
+    const user = await UserFetcher.execute(oauthItem.user.value);
+    res.json(user);
   } catch (err) {
     next(err);
   }
