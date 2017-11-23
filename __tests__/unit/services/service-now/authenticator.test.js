@@ -2,6 +2,7 @@ const nock = require('nock');
 const querystring = require('querystring');
 const { url, client } = require('config/servicenow');
 const Authenticator = require('src/services/service-now/authenticator');
+const ApiError = require('src/ApiError');
 
 describe('ServiceNowAuthenticator.execute', () => {
   const username = 'abraham.lincoln';
@@ -31,7 +32,6 @@ describe('ServiceNowAuthenticator.execute', () => {
 
   beforeEach(() => {
     nock(url)
-      .log(console.log)
       .post('/oauth_token.do', querystring.stringify(expectedServiceNowParams))
       .reply(200, serviceNowRes);
   });
@@ -48,5 +48,28 @@ describe('ServiceNowAuthenticator.execute', () => {
   it('promises the service now response', async () => {
     const res = await Authenticator.execute(params);
     expect(res).toEqual(serviceNowRes);
+  });
+
+  describe('when service now responds with a 401', () => {
+    const serviceNowErrRes = {
+      error_description: 'access_denied',
+      error: 'server_error',
+    };
+
+    beforeEach(() => {
+      nock.cleanAll();
+      nock(url)
+        .post('/oauth_token.do', querystring.stringify(expectedServiceNowParams))
+        .reply(401, serviceNowErrRes);
+    });
+
+    it('rejects', async (done) => {
+      try {
+        await Authenticator.execute(params);
+        done.fail();
+      } catch (err) {
+        done();
+      }
+    });
   });
 });

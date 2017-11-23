@@ -39,14 +39,33 @@ describe('POST /tokens', () => {
     nock.cleanAll();
   });
 
-  it('returns a 201', () => request(app)
+  it('responds with a 201', () => request(app)
       .post('/tokens')
       .set('authorization', clientToken)
       .send(params)
       .expect(201));
 
-  it('returns a 401 when no client token is passed', () => request(app)
+  it('responds with a 401 when no client token is passed', () => request(app)
       .post('/tokens')
       .send(params)
       .expect(401));
+
+  describe('when service now responds with a 401', () => {
+    const serviceNowErrRes = {
+      error_description: 'access_denied',
+      error: 'server_error',
+    };
+
+    beforeEach(() => {
+      nock.cleanAll();
+      nock(url)
+        .post('/oauth_token.do', querystring.stringify(expectedServiceNowParams))
+        .reply(401, serviceNowErrRes);
+    });
+
+    it('responds with a 401', () => request(app)
+      .post('/tokens')
+      .send(params)
+      .expect(401));
+  });
 });

@@ -35,9 +35,9 @@ describe('POST /tickets', () => {
 
   beforeEach(() => {
     nock(serviceNowUrl)
-    .matchHeader('authorization', `Bearer ${token}`)
-    .post('/api/now/table/incident', params)
-    .reply(201, { result: serviceNowRes });
+      .matchHeader('authorization', `Bearer ${token}`)
+      .post('/api/now/table/incident', params)
+      .reply(201, { result: serviceNowRes });
 
     mongoose.connect(url);
   });

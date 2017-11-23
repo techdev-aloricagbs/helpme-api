@@ -1,4 +1,5 @@
 const request = require('superagent');
+const ApiError = require('src/ApiError');
 
 const { url, client } = require('config/servicenow');
 
@@ -10,10 +11,19 @@ class Authenticator {
       client_id: client.id,
       client_secret: client.secret,
     }, params);
-    const res = await request.post(`${url}/oauth_token.do`)
-      .type('form')
-      .send(data);
-    return res.body;
+    try {
+      const res = await request.post(`${url}/oauth_token.do`)
+        .type('form')
+        .send(data);
+      return res.body;
+    } catch (err) {
+      switch (err.status) {
+        case 401:
+          throw new ApiError('InvalidLoginError', 'Username or password is incorrect', err.status);
+        default:
+          throw new ApiError('ServiceNowError', err.body.error_description, err.status);
+      }
+    }
   }
 }
 

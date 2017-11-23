@@ -20,7 +20,7 @@ router.get('/', (req, res) => {
   });
 });
 
-router.post('/tickets', passport.authenticate('bearer', { session: false }), async (req, res, next) => {
+router.get('/tickets', passport.authenticate('bearer', { session: false }), async (req, res, next) => {
   try {
     const ticket = await MyIncidentsFetcher.execute(req.token);
     res.status(201).json(ticket);
