@@ -1,13 +1,12 @@
 const request = require('superagent');
-const { url, admin } = require('config/servicenow');
+const { url } = require('config/servicenow');
 
 module.exports = class {
 
-  static async execute(sysId) {
+  static async execute(sysId, accessToken) {
     const userUrl = `${url}/api/now/table/sys_user/${sysId}`;
-    const adminToken = new Buffer(`${admin.username}:${admin.password}`).toString('base64');
     const res = await request.get(userUrl)
-      .set('Authorization', `Basic ${adminToken}`);
+      .set('Authorization', `Bearer ${accessToken}`);
     return res.body.result;
   }
 

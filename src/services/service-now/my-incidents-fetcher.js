@@ -1,7 +1,7 @@
 const request = require('superagent');
 const { url } = require('config/servicenow');
 
-class IncidentCreator {
+module.exports = class {
 
   static async execute(accessToken) {
     const incidentUrl = `${url}/api/now/table/incident`;
@@ -10,6 +10,4 @@ class IncidentCreator {
     return res.body.result;
   }
 
-}
-
-module.exports = IncidentCreator;
+};

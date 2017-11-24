@@ -24,8 +24,8 @@ router.get('/', (req, res) => {
 
 router.get('/tickets', passport.authenticate('bearer', { session: false }), async (req, res, next) => {
   try {
-    const ticket = await MyIncidentsFetcher.execute(req.token);
-    res.status(201).json(ticket);
+    const tickets = await MyIncidentsFetcher.execute(req.token);
+    res.json(tickets);
   } catch (err) {
     next(err);
   }
@@ -44,7 +44,7 @@ router.post('/tickets', passport.authenticate('bearer', { session: false }), asy
 router.get('/user', passport.authenticate('bearer', { session: false }), async (req, res, next) => {
   try {
     const oauthItem = await OauthFetcher.execute(req.token);
-    const user = await UserFetcher.execute(oauthItem.user.value);
+    const user = await UserFetcher.execute(oauthItem.user.value, req.token);
     res.json(user);
   } catch (err) {
     next(err);

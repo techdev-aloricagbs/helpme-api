@@ -2,7 +2,9 @@ const nock = require('nock');
 const { url, admin } = require('config/servicenow');
 const UserFetcher = require('src/services/service-now/user-fetcher');
 
-describe('OauthCredentialsFetcher', () => {
+describe('UserFetcher', () => {
+  const token = 't8vN29T2r91RSpgXu65fEQ4-S-pJhq4JK2BuruJBp4re54lKIZ1ykdLcZwo1AibEoiaFOllz27fSlSF2I43TjA';
+
   const sysId = 'a8f98bb0eb32010045e1a5115206fe3a';
 
   const userItem = {
@@ -40,7 +42,7 @@ describe('OauthCredentialsFetcher', () => {
     city: '',
     failed_attempts: '',
     user_name: 'abraham.lincoln',
-    roles: 'admin,itil',
+    roles: 'admin,itil', // Only appears when admin creds is used
     title: '',
     sys_class_name: 'sys_user',
     sys_id: sysId,
@@ -68,9 +70,9 @@ describe('OauthCredentialsFetcher', () => {
   };
 
   beforeEach(() => {
-    const adminToken = new Buffer(`${admin.username}:${admin.password}`).toString('base64');
     nock(url)
-      .matchHeader('Authorization', `Basic ${adminToken}`)
+    .log(console.log)
+      .matchHeader('Authorization', `Bearer ${token}`)
       .get(`/api/now/table/sys_user/${sysId}`)
       .reply(200, {
         result: userItem,
@@ -82,7 +84,7 @@ describe('OauthCredentialsFetcher', () => {
   });
 
   it('promises the service now response body', async () => {
-    const res = await UserFetcher.execute(sysId);
+    const res = await UserFetcher.execute(sysId, token);
     expect(res).toEqual(userItem);
   });
 });
