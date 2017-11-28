@@ -3,11 +3,12 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const expressPromise = require('express-promise');
 const cors = require('cors');
+const { accessToken } = require('config/rollbar');
 
 const Rollbar = require('rollbar');
 
 const rollbar = new Rollbar({
-  accessToken: process.env.ROLLBAR_KEY,
+  accessToken,
   handleUncaughtExceptions: true,
   handleUnhandledRejections: true,
 });
