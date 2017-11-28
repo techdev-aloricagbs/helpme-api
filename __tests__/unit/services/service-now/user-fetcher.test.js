@@ -1,5 +1,5 @@
 const nock = require('nock');
-const { url, admin } = require('config/servicenow');
+const { url } = require('config/servicenow');
 const UserFetcher = require('src/services/service-now/user-fetcher');
 
 describe('UserFetcher', () => {
@@ -71,7 +71,6 @@ describe('UserFetcher', () => {
 
   beforeEach(() => {
     nock(url)
-    .log(console.log)
       .matchHeader('Authorization', `Bearer ${token}`)
       .get(`/api/now/table/sys_user/${sysId}`)
       .reply(200, {
