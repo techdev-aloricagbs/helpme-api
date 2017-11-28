@@ -43,4 +43,27 @@ describe('MyIncidentsFetcher', () => {
     const res = await MyIncidentsFetcher.execute(token);
     expect(res).toEqual(myIncidents);
   });
+
+  describe('when a filter is passed', () => {
+    const incidentNumber = 'INC2';
+    let incidentsApi;
+
+    beforeEach(() => {
+      nock.cleanAll();
+      incidentsApi = nock(url)
+        .matchHeader('Authorization', `Bearer ${token}`)
+        .get('/api/now/table/incident')
+        .query({
+          sysparm_query: `numberLIKE${incidentNumber}`,
+        })
+        .reply(200, {
+          result: myIncidents,
+        });
+    });
+
+    it('appends the number to the sysparm_query', async () => {
+      await MyIncidentsFetcher.execute(token, incidentNumber);
+      incidentsApi.done();
+    });
+  });
 });

@@ -51,4 +51,29 @@ describe('GET /tickets', () => {
       .then((res) => {
         expect(res.body).toEqual(myIncidents);
       }));
+
+  describe('when a filter is passed', () => {
+    const incidentNumber = 'INC2';
+    let incidentsApi;
+
+    beforeEach(() => {
+      nock.cleanAll();
+      incidentsApi = nock(url)
+        .matchHeader('Authorization', `Bearer ${token}`)
+        .get('/api/now/table/incident')
+        .query({
+          sysparm_query: `numberLIKE${incidentNumber}`,
+        })
+        .reply(200, {
+          result: myIncidents,
+        });
+    });
+
+    it('appends the number to the sysparm_query', () => request(app)
+        .get(`/tickets?id_filter=${incidentNumber}`)
+        .set('Authorization', `Bearer ${token}`)
+        .then(() => {
+          incidentsApi.done();
+        }));
+  });
 });

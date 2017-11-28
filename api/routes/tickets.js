@@ -9,7 +9,8 @@ const router = Router();
 
 router.get('/tickets', passport.authenticate('bearer', { session: false }), async (req, res, next) => {
   try {
-    const tickets = await MyIncidentsFetcher.execute(req.token);
+    const incidentNumberFilter = req.query.id_filter;
+    const tickets = await MyIncidentsFetcher.execute(req.token, incidentNumberFilter);
     res.json(tickets);
   } catch (err) {
     next(err);
