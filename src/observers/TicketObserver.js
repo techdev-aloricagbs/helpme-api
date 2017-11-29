@@ -7,7 +7,10 @@ class TicketObserver {
   }
 
   recordSystemInfo(ticket, sysInfo) {
-    const newSysInfo = new SystemInfo(sysInfo);
+    const newSysInfo = new SystemInfo(Object.assign({
+      ticket_number: ticket.number,
+      location: ticket.location,
+    }, sysInfo));
     return newSysInfo.save();
   }
 
