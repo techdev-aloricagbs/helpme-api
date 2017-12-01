@@ -10,7 +10,8 @@ const router = Router();
 router.get('/', passport.authenticate('bearer', { session: false }), async (req, res, next) => {
   try {
     const incidentNumberFilter = req.query.id_filter;
-    const tickets = await MyIncidentsFetcher.execute(req.token, incidentNumberFilter);
+    const fetcher = new MyIncidentsFetcher(req.user);
+    const tickets = await fetcher.execute(req.user.token, incidentNumberFilter);
     res.json(tickets);
   } catch (err) {
     next(err);
@@ -21,7 +22,7 @@ router.post('/', passport.authenticate('bearer', { session: false }), async (req
   const params = req.body;
   try {
     const creator = new TicketCreator(req.user)
-    const ticket = await creator.execute(params, req.token);
+    const ticket = await creator.execute(params, req.user.token);
     res.status(201).json(ticket);
   } catch (err) {
     next(err);

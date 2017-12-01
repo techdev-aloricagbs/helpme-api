@@ -6,6 +6,7 @@ module.exports = new BearerStrategy(async (token, cb) => {
   try {
     const oauthItem = await OauthFetcher.execute(token);
     const user = await UserFetcher.execute(oauthItem.user.value, token);
+    user.token = token;
     cb(null, user);
   } catch (err) {
     cb(err);

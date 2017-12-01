@@ -16,6 +16,7 @@ class TicketCreator {
       u_impacted_client: 'Alorica Internal',
       u_issue_first_occurred: new Date(),
       u_symptom: 'Not working properly',
+      u_application_source: 'helpme',
     });
     serviceNowParams.called_id = this.serviceNowUser.sys_id;
     const res = await IncidentCreator.execute(serviceNowParams, token);

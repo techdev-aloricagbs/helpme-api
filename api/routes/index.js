@@ -47,7 +47,7 @@ router.get('/swagger', (req, res) => {
 
 // eslint-disable-next-line no-unused-vars
 router.use((err, req, res, next) => {
-  console.log(err)
+   console.log(err)
   res.status(err.status)
     .json(err.toJSON());
 });
