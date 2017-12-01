@@ -18,6 +18,19 @@ describe('POST /tickets', () => {
     },
   };
 
+  const sysId = 'a8f98bb0eb32010045e1a5115206fe3a';
+
+  const userItem = {
+    sys_id: sysId,
+  };
+
+  const oauthItem = {
+    token,
+    user: {
+      value: sysId,
+    },
+  };
+
   const serviceNowRes = {
     parent: '',
     made_sla: 'true',
@@ -34,8 +47,29 @@ describe('POST /tickets', () => {
   };
 
   beforeEach(() => {
+    const api = nock(serviceNowUrl)
+      .log(console.log)
+      .matchHeader('Authorization', `Bearer ${token}`)
+      .get('/api/now/table/oauth_credential')
+      .query({
+        sysparm_query: `token=${token}`,
+      })
+      .reply(200, {
+        result: [
+          oauthItem,
+        ],
+      });
+    console.log(api.keyedInterceptors);
+
     nock(serviceNowUrl)
-      .matchHeader('authorization', `Bearer ${token}`)
+      .matchHeader('Authorization', `Bearer ${token}`)
+      .get(`/api/now/table/sys_user/${sysId}`)
+      .reply(200, {
+        result: userItem,
+      });
+
+    nock(serviceNowUrl)
+      .matchHeader('Authorization', `Bearer ${token}`)
       .post('/api/now/table/incident', params)
       .reply(201, { result: serviceNowRes });
 
@@ -46,7 +80,7 @@ describe('POST /tickets', () => {
     nock.cleanAll();
   });
 
-  it('responds with a 201', () => request(app)
+  it.only('responds with a 201', () => request(app)
       .post('/tickets')
       .send(params)
       .set('Authorization', `Bearer ${token}`)
