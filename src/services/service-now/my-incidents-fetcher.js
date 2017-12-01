@@ -11,13 +11,14 @@ module.exports = class {
   async execute(accessToken, incidentNumberFilter) {
     const incidentUrl = `${url}/api/now/table/incident`;
     let query = 'u_application_source=helpme';
-    query += !this.serviceNowUser.roles.includes('service_desk') && `^caller_id=${this.serviceNowUser.sys_id}`;
+    query += !this.serviceNowUser.is_service_desk ? `^caller_id=${this.serviceNowUser.sys_id}` : '';
     try {
       const res = await request.get(incidentUrl)
         .query({
           sysparm_query: incidentNumberFilter ? `${query}^numberLIKE${incidentNumberFilter}` : query,
         })
         .set('Authorization', `Bearer ${accessToken}`);
+      console.log(res)
       return res.body.result;
     } catch (err) {
       console.log(err);

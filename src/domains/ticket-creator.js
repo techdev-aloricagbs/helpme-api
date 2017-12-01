@@ -1,6 +1,7 @@
 const eventBus = require('src/eventBus');
 const changeCaseObj = require('change-case-object');
 const IncidentCreator = require('src/services/service-now/incident-creator');
+const prettyjson = require('prettyjson');
 
 class TicketCreator {
 
@@ -17,8 +18,11 @@ class TicketCreator {
       u_issue_first_occurred: new Date(),
       u_symptom: 'Not working properly',
       u_application_source: 'helpme',
+      u_business_service: 'Shared Services',
+      business_service: 'Shared Services',
+      business_stc: 'Shared Services',
+      u_line_of_business: 'Shared Services',
     });
-    serviceNowParams.called_id = this.serviceNowUser.sys_id;
     const res = await IncidentCreator.execute(serviceNowParams, token);
     eventBus.emit('ticket-created', res, params.sysInfo);
     return res;

@@ -20,6 +20,16 @@ router.get('/', (req, res) => {
   });
 });
 
+router.post('/tokens', authenticateClient, async (req, res, next) => {
+  console.log('roar');
+  const params = req.body;
+  try {
+    const auth = Authenticator.execute(params);
+    res.status(201).json(auth);
+  } catch (err) {
+    next(err);
+  }
+});
 
 router.use(passport.authenticate('bearer', { session: false }));
 
@@ -30,24 +40,13 @@ router.get('/user', async (req, res) => {
   res.json(req.user);
 });
 
-
-router.post('/tokens', authenticateClient, async (req, res, next) => {
-  const params = req.body;
-  try {
-    const auth = Authenticator.execute(params);
-    res.status(201).json(auth);
-  } catch (err) {
-    next(err);
-  }
-});
-
 router.get('/swagger', (req, res) => {
   res.json(swaggerConfig);
 });
 
 // eslint-disable-next-line no-unused-vars
 router.use((err, req, res, next) => {
-   console.log(err)
+  console.log(err)
   res.status(err.status)
     .json(err.toJSON());
 });

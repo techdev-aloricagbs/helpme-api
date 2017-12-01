@@ -4,7 +4,7 @@ const ApiError = require('src/ApiError');
 
 const router = Router();
 
-router.get('/ticket/:ticketNumber', (req, res, next) => {
+router.get('/:ticketNumber', (req, res, next) => {
   SystemInfo.find({
     ticket_number: req.params.ticketNumber,
   }, (err, systemInfo) => {
@@ -13,6 +13,7 @@ router.get('/ticket/:ticketNumber', (req, res, next) => {
       return next(apiError);
     }
 
+    console.log(systemInfo);
     res.json(systemInfo);
   });
 });
